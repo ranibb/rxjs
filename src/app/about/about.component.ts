@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { interval, timer, fromEvent, Observable, noop } from 'rxjs';
+import { noop } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+import { createHttpObservable } from '../common/util';
 
 @Component({
     selector: 'about',
@@ -12,33 +15,23 @@ export class AboutComponent implements OnInit {
 
     ngOnInit() {
 
-        const http$ = Observable.create(observer => {
+        const http$ = createHttpObservable('api/courses');
 
-            fetch('api/courses').then(response => {
+        const courses$ = http$.pipe(
+            // Obtain the value of payload can be done in 2 ways:
 
-                return response.json();
+            // 1 some way
+            // map((res:any) => res.payload)
 
-            })
-            .then(body => {
+            // 2 standard JavaScript 
+            map(res => Object.values(res['payload']))
+        );
 
-                observer.next(body);
-
-                observer.complete();
-
-            })
-            .catch(err => {
-
-                observer.error(err)
-
-            })
-
-        })
-
-        http$.subscribe(
+        courses$.subscribe(
             courses => console.log(courses),
             noop,
             () => console.log('completed')
-        )
+        );
 
     }
 
