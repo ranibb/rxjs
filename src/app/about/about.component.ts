@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { noop, of, concat, interval, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { createHttpObservable } from '../common/util';
 
 
 @Component({
@@ -12,13 +13,11 @@ export class AboutComponent implements OnInit {
 
     ngOnInit() {
 
-        const interval1$ = interval(1000);
+        const http$ = createHttpObservable('/api/courses');
 
-        const interval2$ = interval1$.pipe(map(val => 10 * val));
-
-        const result$ = merge(interval1$, interval2$);
-
-        result$.subscribe(val => console.log(val))
+        const sub = http$.subscribe(val => console.log(val));
+        
+        setTimeout(() => sub.unsubscribe(), 0)
 
     }
 

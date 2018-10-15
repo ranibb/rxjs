@@ -4,23 +4,29 @@ export function createHttpObservable(url: string) {
 
     return Observable.create(observer => {
 
-        fetch(url).then(response => {
+        const controller = new AbortController();
+        const signal = controller.signal;
 
-            return response.json();
+        fetch(url, {signal})
+            .then(response => {
 
-        })
-        .then(body => {
+                return response.json();
 
-            observer.next(body);
+            })
+            .then(body => {
 
-            observer.complete();
+                observer.next(body);
 
-        })
-        .catch(err => {
+                observer.complete();
 
-            observer.error(err)
+            })
+            .catch(err => {
 
-        })
+                observer.error(err)
+
+            })
+
+        return () => controller.abort();
 
     })
 
