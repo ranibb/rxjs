@@ -25,12 +25,6 @@ export class HomeComponent implements OnInit {
 
         const courses$: Observable<Course[]> = http$.pipe(
 
-            tap(() => console.log("HTTP request executed")),
-
-            map(res => Object.values(res['payload'])),
-
-            shareReplay(),
-
             catchError(err => {
 
                 console.log("Error occurred", err);
@@ -38,6 +32,12 @@ export class HomeComponent implements OnInit {
                 return throwError(err);
                 
             }),
+
+            tap(() => console.log("HTTP request executed")),
+
+            map(res => Object.values(res['payload'])),
+
+            shareReplay(),
 
             finalize(() => {
 
