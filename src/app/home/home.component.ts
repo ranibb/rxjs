@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { noop, Observable, of, throwError } from 'rxjs';
-import { map, shareReplay, tap, catchError } from 'rxjs/operators';
+import { map, shareReplay, tap, catchError, finalize } from 'rxjs/operators';
 
 import { Course } from "../model/course";
 import { createHttpObservable } from '../common/util';
@@ -37,6 +37,12 @@ export class HomeComponent implements OnInit {
 
                 return throwError(err);
                 
+            }),
+
+            finalize(() => {
+
+                console.log('Finalize executed..')
+
             })
         );
 
