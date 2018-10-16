@@ -33,17 +33,17 @@ export class HomeComponent implements OnInit {
                 
             }),
 
-            tap(() => console.log("HTTP request executed")),
-
-            map(res => Object.values(res['payload'])),
-
-            shareReplay(),
-
             finalize(() => {
 
                 console.log('Finalize executed..')
 
-            })
+            }),
+
+            tap(() => console.log("HTTP request executed")),
+
+            map(res => Object.values(res['payload'])),
+
+            shareReplay()
         );
 
         this.beginnersCourses$ = courses$.pipe(
