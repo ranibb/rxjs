@@ -16,7 +16,7 @@ import {
 import { merge, fromEvent, Observable, concat } from 'rxjs';
 import { Lesson } from '../model/lesson';
 import { createHttpObservable } from '../common/util';
-import { debug, RxJsLoggingLevel } from '../common/debug';
+import { debug, RxJsLoggingLevel, SetRxJsLoggingLevel } from '../common/debug';
 
 
 @Component({
@@ -44,8 +44,11 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
         this.course$ = createHttpObservable(`/api/courses/${this.courseId}`)
             .pipe(
-                tap(course => console.log(course))
+                debug(RxJsLoggingLevel.INFO, "course value")
             )
+
+        SetRxJsLoggingLevel(RxJsLoggingLevel.TRACE)
+        // SetRxJsLoggingLevel(RxJsLoggingLevel.DEBUG)
 
     }
 
@@ -55,10 +58,11 @@ export class CourseComponent implements OnInit, AfterViewInit {
         .pipe(
             map(event => event.target.value),
             startWith(''),
-            debug(RxJsLoggingLevel.INFO, "search"),
+            debug(RxJsLoggingLevel.TRACE, "search"),
             debounceTime(400),
             distinctUntilChanged(),
-            switchMap(search => this.loadLessons(search))
+            switchMap(search => this.loadLessons(search)),
+            debug(RxJsLoggingLevel.DEBUG, "lessons value"),
         )
 
     }
